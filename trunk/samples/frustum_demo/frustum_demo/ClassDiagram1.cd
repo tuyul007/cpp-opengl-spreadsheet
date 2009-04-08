@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Cfrustum_demoView">
+    <Position X="6.5" Y="6" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAgBAAAAAhBAgAgAAEBgAAAAAAAA=</HashCode>
+      <FileName>frustum_demoView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="opengl_msvc_view">
+    <Position X="6.5" Y="0.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAABBAAAQAEAAkAAAgBAAoAIgDAAAgAAEQCAAAGAgAA=</HashCode>
+      <FileName>g:\Projects\cpp-opengl-spreadsheet\cpp_src\open_gl_view.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="scene" />
+      <Field Name="writer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="opengl_static_scene">
+    <Position X="1.25" Y="2" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAQAEAAQAAAAAAAACIAAAAAAAAAAAAABAAAAAIAAAA=</HashCode>
+      <FileName>g:\Projects\cpp-opengl-spreadsheet\cpp_src\open_gl_view.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="opengl_font_handler">
+    <Position X="10.75" Y="2.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAABAAABAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>g:\Projects\cpp-opengl-spreadsheet\cpp_src\open_gl_view.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

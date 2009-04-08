@@ -35,9 +35,6 @@ void opengl_msvc_view::refresh_window( ){
 	InvalidateRect(NULL,TRUE);
     UpdateWindow();	
 }
-opengl_msvc_view::~opengl_msvc_view()
-{
-}
 BOOL opengl_msvc_view::init_openGL(){
 
     this->m_pDC = new CClientDC(this) ;
@@ -68,7 +65,8 @@ BOOL opengl_msvc_view::init_openGL(){
     ::glEnable(GL_LIGHT0) ;
     ::glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE) ;
     ::glEnable(GL_COLOR_MATERIAL) ;
-	this->init_OpenGL_font( );
+	writer.init_2D_font( m_pDC->GetSafeHdc( ));
+	//this->init_3D_font( );
     return true;
 }
 BOOL opengl_msvc_view::SetupPixelFormat( void ){
@@ -116,26 +114,7 @@ BOOL opengl_msvc_view::PreCreateWindow(CREATESTRUCT& cs)
 }
 void opengl_msvc_view::OnDraw(CDC* pDC)
 {
-	BOOL bResult = wglMakeCurrent (pDC->m_hDC, m_hrc);
-    if (!bResult)
-    {
-          TRACE("wglMakeCurrent Failed %x\r\n", GetLastError() ) ;
-    }
-
-    
-    ::glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    ::glPushMatrix();
-
-	//Add app specific code here
- 
-	::glPopMatrix();
-    ::glFinish();
-
-
-    if ( FALSE == ::SwapBuffers( m_pDC->GetSafeHdc() ) )
-        {
-
-        } 
+	
 }
 void opengl_msvc_view::OnSize(UINT nType, int cx, int cy) 
 {
@@ -146,15 +125,6 @@ void opengl_msvc_view::OnSize(UINT nType, int cx, int cy)
       TRACE("wglMakeCurrent Failed %x\r\n", GetLastError() ) ;
       return ;
     }
-	GLdouble gldAspect (cy ? (GLdouble) cx/ (GLdouble) cy : 0.0f);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-	gluPerspective(45.0f,gldAspect,0.1f,100.0f);
-    glViewport(0, 0, cx, cy);
-    glMatrixMode(GL_MODELVIEW);                         // Select The Modelview Matrix
-    glLoadIdentity();                                   // Reset The Modelview Matrix                 // Reset The Modelview Matrix
 }
 
 void opengl_msvc_view::OnDestroy() 
@@ -167,9 +137,10 @@ void opengl_msvc_view::OnDestroy()
         m_hrc = NULL ;
     }
 	if( m_pDC ) delete m_pDC;
-	KillFont( );
+	writer.kill_2D_Fonts( );
+	//kill_3D_Font( );
 }
-int opengl_msvc_view::OnCreate(LPCREATESTRUCT lpCreateStruct) 
+int  opengl_msvc_view::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
