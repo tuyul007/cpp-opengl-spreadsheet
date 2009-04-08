@@ -28,7 +28,7 @@ protected:
 	GLfloat pos_y (int y ) {return (GLfloat)y / (GLfloat) client_area.height * (GLfloat) client_area.num_rows + real::one( );}
 
 	spread_sheet_cell active_cell;
-	void draw_2D_vert_lines(  ) const{
+	void draw_2D_vert_lines(  ) const{	
 		GLfloat pos_x = 0.0f;
 		for(int i=0; i <= client_area.num_cols; i++){
 			glBegin(GL_LINES);
@@ -42,8 +42,8 @@ protected:
 		GLfloat pos_y = 0.0f;
 		for(int i=0; i <= client_area.num_cols; i++){
 			glBegin(GL_LINES);
-				glVertex3f(0.0f, pos_y, 0.02f);
-				glVertex3f(client_area.width, pos_y, 0.02f);
+				glVertex3f(0.0f, pos_y, 0.0f);
+				glVertex3f(client_area.width, pos_y, 0.0f);
 			glEnd();
 			pos_y += client_area.cell_2D_height( );
 		}
@@ -89,6 +89,7 @@ public:
 	}
 	void draw_2D_cell_structure( void ) const {
 		glLineWidth(1.0);
+		glColor3f(0.3f,0.3f,0.3f);
 		draw_2D_vert_lines(  ); 
 		draw_2D_hor_lines(  );
 		active_cell.draw_2D_Outline( client_area );

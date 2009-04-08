@@ -25,7 +25,6 @@ public:
 		width =  w;
 		height = h;
 	}
-
 };
 
 
