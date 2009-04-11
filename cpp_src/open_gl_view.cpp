@@ -1,10 +1,24 @@
 #pragma once
 #include "stdafx.h"
 #include "open_gl_view.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+
+void opengl_static_scene::draw_cartesian_guides( ) const{
+		::glBegin(GL_LINES);
+			::glColor3f(1.0,0.0,0.0);
+			::glVertex3f(0.0f, 0.0f, 10.0f);
+			::glVertex3f(0.0f, 0.0f, -10.0f);
+		
+			::glVertex3f(0.0f, 10.0f, 0.0f);
+			::glVertex3f(0.0f, -10.0f, 0.0f);
+
+			::glVertex3f(-10.0f, 0.0f, 0.0f);
+			::glVertex3f(10.0f, 0.0f, 0.0f);
+		::glEnd( );
+}
 
 
 IMPLEMENT_DYNCREATE(opengl_msvc_view, CView)
@@ -15,10 +29,17 @@ BEGIN_MESSAGE_MAP(opengl_msvc_view, CView)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
 END_MESSAGE_MAP()
+
+
+void opengl_static_scene::draw( ) const 
+{
+	::glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	::glTranslatef(O[0], O[1], O[2]);	
+	if (m_draw_cartesian_guide) this->draw_cartesian_guides( );
+}
 opengl_msvc_view::opengl_msvc_view()
 {
 }
-
 #ifdef _DEBUG
 void opengl_msvc_view::AssertValid() const
 {
@@ -65,8 +86,6 @@ BOOL opengl_msvc_view::init_openGL(){
     ::glEnable(GL_LIGHT0) ;
     ::glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE) ;
     ::glEnable(GL_COLOR_MATERIAL) ;
-	writer.init_2D_font( m_pDC->GetSafeHdc( ));
-	//this->init_3D_font( );
     return true;
 }
 BOOL opengl_msvc_view::SetupPixelFormat( void ){
@@ -114,6 +133,27 @@ BOOL opengl_msvc_view::PreCreateWindow(CREATESTRUCT& cs)
 }
 void opengl_msvc_view::OnDraw(CDC* pDC)
 {
+	if ( this->animation.is_running( )  && (!animation.time_to_redraw( )))
+	{
+		InvalidateRect( 0, FALSE );
+		GetParent()->PostMessage(WM_PAINT);
+		return;
+	}
+	else
+	{
+		if(animation.is_running( )) PREPARE_ANIMATE( );
+		BOOL bResult = wglMakeCurrent (pDC->m_hDC, m_hrc);
+		if (!bResult)
+		{
+			TRACE("wglMakeCurrent Failed %x\r\n", GetLastError() ) ;
+		}
+		DRAW_SCENE( );
+		if ( FALSE == ::SwapBuffers( m_pDC->GetSafeHdc() ) )
+		{
+
+		} 
+		if(animation.is_running( )) refresh_window( );
+	}
 	
 }
 void opengl_msvc_view::OnSize(UINT nType, int cx, int cy) 
@@ -137,8 +177,6 @@ void opengl_msvc_view::OnDestroy()
         m_hrc = NULL ;
     }
 	if( m_pDC ) delete m_pDC;
-	writer.kill_2D_Fonts( );
-	//kill_3D_Font( );
 }
 int  opengl_msvc_view::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
