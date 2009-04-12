@@ -1,3 +1,4 @@
+//Other libraries
 #include <math.h>
 #include <iostream>
 
@@ -19,11 +20,11 @@ public:
 
 };
 class spread_sheet{
-friend class CfgView;
-
+public:
+	spread_sheet_dimension client_area;	
 protected:	
 	spread_sheet_cell_container sp_cells;
-	spread_sheet_dimension client_area;	
+	
 	GLfloat pos_x( int x ) {return ((GLfloat) x / (GLfloat) client_area.width) * (GLfloat) client_area.num_cols + (GLfloat) real::one( );}
 	GLfloat pos_y (int y ) {return (GLfloat)y / (GLfloat) client_area.height * (GLfloat) client_area.num_rows + real::one( );}
 
@@ -64,8 +65,7 @@ protected:
 
 	glEnd();
 	::glPopMatrix( );	*/
-}
-
+	}
 public:
 	spread_sheet( ):client_area(5,5){}	
 	~spread_sheet( ){}
@@ -99,10 +99,10 @@ public:
 	{
 		active_cell.set_coordinates((int)pos_x( x ), (int)pos_y( y ));
 	}
-	void inspect_cell_wraps_coords(long x, long y){
+	void inspect_cell_wraps_coords(long x, long y ){
 		coord c((long)pos_x( x ), (long)pos_y( y));
 		if (sp_cells.contains(c)){
-			Ccell_info_dlg dlg;
+			cell_info_dlg dlg;
 			dlg.DoModal( );
 		}
 		else{

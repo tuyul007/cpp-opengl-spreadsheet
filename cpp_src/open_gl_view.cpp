@@ -34,8 +34,10 @@ END_MESSAGE_MAP()
 void opengl_static_scene::draw( ) const 
 {
 	::glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	::glTranslatef(O[0], O[1], O[2]);	
-	if (m_draw_cartesian_guide) this->draw_cartesian_guides( );
+	if (projection.type( ) == string("3D")){
+		::glTranslatef(O[0], O[1], O[2]);	
+		if (m_draw_cartesian_guide) this->draw_cartesian_guides( );
+	}
 }
 opengl_msvc_view::opengl_msvc_view()
 {
