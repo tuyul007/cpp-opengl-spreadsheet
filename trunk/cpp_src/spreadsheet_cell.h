@@ -1,34 +1,18 @@
-#include <string>
-#include <vector>
-#include <cpp_base_library\base_numbers.h>
+//Franck Binard libraries
+//Available on Google Code
+#include <base_numbers.h>
+
+//Other libraries
 #include "gl/gl.h"
 #include "gl/glu.h"
+
+#include <string>
+#include <vector>
+
+
 using namespace std;
 
-class dimension {
-public:	
-	real::_base_number bottom;
-	real::_base_number left;
-	real::_base_number width;
-	real::_base_number height;
-	
-	
-	dimension(real::_base_number w=0.0, real::_base_number h=0.0, real::_base_number l=0.0, real::_base_number b=0.0): 
-	bottom(b), left(l), width(w),height(h){}
-
-	void set_win_width(real::_base_number w) {width = w;};
-	void set_win_height(real::_base_number h) {height = h;};
-
-	void set_size(int w, int h, real::_base_number l = 0.0, real::_base_number b = 0.0){
-		left = l;
-		bottom = b;
-		width =  w;
-		height = h;
-	}
-};
-
-
-class spread_sheet_dimension : public dimension{
+class spread_sheet_dimension : public real::dimension{
 public:
 	
 	integral::_base_number num_cols;
@@ -48,8 +32,6 @@ public:
 
 	void remLastRow( ){ if (num_rows > 1) num_rows--;}
 	void remLastCol( ){if (num_cols > 1) num_cols--;}
-
-
 };
 
 class coord {
@@ -120,19 +102,19 @@ public:
 		cell_coord.col = coord::to_col_coordinates( x );
 		cell_coord.row = y;		
 	}
-	dimension get_dimension(const spread_sheet_dimension& client_area) const{
+	real::dimension get_dimension(const spread_sheet_dimension& client_area) const{
 		GLfloat row_idx = (GLfloat)cell_coord.get_row( );
 		GLfloat col_idx = (GLfloat)coord::excel_column_numerical(cell_coord.get_col( ));
 		
 		GLfloat bottom = client_area.height - (row_idx * client_area.cell_2D_height( ));
 		GLfloat left = (col_idx - 1.0f)* client_area.cell_2D_width( );
 
-		return dimension(client_area.cell_2D_width( ),client_area.cell_2D_height( ),left, bottom);
+		return real::dimension(client_area.cell_2D_width( ),client_area.cell_2D_height( ),left, bottom);
 
 
 	}
 	void draw_2D_Outline( const spread_sheet_dimension& client_area ) const{
-		dimension dim(get_dimension( client_area ));
+		real::dimension dim(get_dimension( client_area ));
 		glLineWidth(5.0);
 		glBegin(GL_LINES);
 				glColor3f(1.0f, 0.0f, 0.0f);			

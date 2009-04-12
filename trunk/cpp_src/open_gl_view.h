@@ -1,7 +1,6 @@
 #pragma once
-#include <cpp_base_library\base_numbers.h>
-
-#include <mmsystem.h> // for MM timers (you'll need WINMM.LIB)
+#include <base_numbers.h>
+#include <mmsystem.h> 
 
 #include "gl/gl.h"
 #include "gl/glu.h"
@@ -11,19 +10,40 @@
 
 using namespace std;
 
+
 class opengl_static_scene{
-protected:
-	bool m_draw_cartesian_guide;
-	vector<GLfloat> O;
-	GLdouble frustum_bottom_top_angle;
+	class color_type {
+public:
 	void black( ) const {::glColor3f(0.0f,0.0f,0.0f);}
 	void red( ) const {::glColor3f(1.0f, 0.0f, 0.0f);}
 	void lime( ) const {::glColor3f(0.0f, 1.0f, 0.0f);}
+    void purple( ) const {::glColor3f(1.0f, 0.14f, 0.6667f);}  
+};
+	class projection_type{
+		bool switch_projection;
+	public:
+		void _2D( ) {switch_projection = false;}
+		void _3D( ){switch_projection = true;}
+		string type( void ) const
+		{
+			return (string)(switch_projection ? "3D" : "2D");
+		}
+	};
+	projection_type projection;
 
+protected:
+	int projection_type;
+	bool m_draw_cartesian_guide;
+	vector<GLfloat> O;
+	GLdouble frustum_bottom_top_angle;
+		
 public:
+	color_type color;
 	opengl_static_scene( GLdouble frustum_bot_top_angle = 45.0f):
-	  frustum_bottom_top_angle(frustum_bot_top_angle),
-	  O(vector<GLfloat>(3)){}
+		frustum_bottom_top_angle(frustum_bot_top_angle)
+		{
+			O.resize(3);
+		}
 
 	GLdouble get_frustum_bottom_top_angle( void ) const {return frustum_bottom_top_angle;}
 	void set_frustum_bottom_top_angle( GLdouble newAngle ) {
@@ -31,7 +51,8 @@ public:
 	}
 	
 	
-	void project_three_d( const CView& v) const {
+	void project_three_d( const CView& v)  {
+		projection._3D( );
 		RECT r;
 		v.GetClientRect(&r);
 		glMatrixMode(GL_PROJECTION);						
@@ -42,7 +63,8 @@ public:
 		glMatrixMode(GL_MODELVIEW);	
 		glLoadIdentity(); 
 	}
-	void project_two_d(  const CView& v ) const {
+	void project_two_d(  const CView& v ) {
+		projection._2D( );	
 		RECT r;
 		v.GetClientRect(&r);
 		glMatrixMode(GL_PROJECTION);
@@ -50,8 +72,8 @@ public:
 		glOrtho(0.0f,(GLdouble) r.right, 0.0f, (GLdouble)r.bottom, 0.0, -1.0);
 		glViewport(0, 0, r.right, r.bottom);
 		glMatrixMode(GL_MODELVIEW);   
-	}		
-	
+		glLoadIdentity(); 
+	}			
 	virtual void draw_cartesian_guides( ) const;
 	virtual void draw( ) const;
 };
@@ -65,9 +87,9 @@ public:
 		HFONT	font;										
 		HFONT	oldfont;									
 
-		base = glGenLists(96);								// Storage For 96 Characters
+		base = glGenLists(96);						
 
-		font = CreateFont(	-24,							// Height Of Font
+		font = CreateFont(	-24,							
 						0,								// Width Of Font
 						0,								// Angle Of Escapement
 						0,								// Orientation Angle
@@ -81,14 +103,14 @@ public:
 						ANTIALIASED_QUALITY,			// Output Quality
 						FF_DONTCARE|DEFAULT_PITCH,		// Family And Pitch
 						_T("Courier New"));					// Font Name
-		oldfont = (HFONT)SelectObject(hDC, font);           // Selects The Font We Want
-		wglUseFontBitmaps(hDC, 32, 96, base);				// Builds 96 Characters Starting At Character 32
-		SelectObject(hDC, oldfont);							// Selects The Font We Want
-		DeleteObject(font);									// Delete The Font
+		oldfont = (HFONT)SelectObject(hDC, font);           
+		wglUseFontBitmaps(hDC, 32, 96, base);			
+		SelectObject(hDC, oldfont);							
+		DeleteObject(font);								
 	}
 	GLvoid glPrint(real::dimension dim, const char *fmt, ...)					
 	{
-		glRasterPos2i(dim.left, dim.bottom);
+		glRasterPos2i((GLint)dim.left, (GLint)dim.bottom);
 											
 		char		text[256];								
 		va_list		ap;										
@@ -132,10 +154,6 @@ public:
 };
 
 
-
-
-
-
 class opengl_msvc_view : public CView{
 protected:	
 	opengl_animation animation;
@@ -153,7 +171,7 @@ protected: // create from serialization only
 
 public:
 	virtual ~opengl_msvc_view(){}
-	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
+	virtual void OnDraw(CDC* pDC); 
 	BOOL PreCreateWindow(CREATESTRUCT& cs);
 	
 #ifdef _DEBUG
