@@ -7,17 +7,17 @@
 
 
 void opengl_static_scene::draw_cartesian_guides( ) const{
-		::glBegin(GL_LINES);
-			::glColor3f(1.0,0.0,0.0);
-			::glVertex3f(0.0f, 0.0f, 10.0f);
-			::glVertex3f(0.0f, 0.0f, -10.0f);
-		
-			::glVertex3f(0.0f, 10.0f, 0.0f);
-			::glVertex3f(0.0f, -10.0f, 0.0f);
-
-			::glVertex3f(-10.0f, 0.0f, 0.0f);
-			::glVertex3f(10.0f, 0.0f, 0.0f);
-		::glEnd( );
+	glLineWidth(1.5);
+	gl_point pos_z(0.0f, 0.0f, 10.0f);
+	::glBegin(GL_LINES);
+		color.red( );
+		pos_z.vertex( );
+		::glVertex3f(0.0f, 0.0f, -10.0f);
+		::glVertex3f(0.0f, 10.0f, 0.0f);
+		::glVertex3f(0.0f, -10.0f, 0.0f);
+		::glVertex3f(-10.0f, 0.0f, 0.0f);
+		::glVertex3f(10.0f, 0.0f, 0.0f);
+	::glEnd( );
 }
 
 
@@ -33,7 +33,6 @@ END_MESSAGE_MAP()
 
 void opengl_static_scene::draw( ) const 
 {
-	::glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	if (projection.type( ) == string("3D")){
 		::glTranslatef(O[0], O[1], O[2]);	
 		if (m_draw_cartesian_guide) this->draw_cartesian_guides( );
@@ -81,7 +80,7 @@ BOOL opengl_msvc_view::init_openGL(){
         
             return false;
         }   
-    ::glClearColor(1.0f, 1.0f, 1.0f, 0.0f) ;
+    ::glClearColor(0.0f, 0.0f, 0.0f, 0.0f) ;
     ::glClearDepth( 1.0f );
     ::glEnable( GL_DEPTH_TEST );
     ::glEnable(GL_LIGHTING) ;
@@ -149,6 +148,7 @@ void opengl_msvc_view::OnDraw(CDC* pDC)
 		{
 			TRACE("wglMakeCurrent Failed %x\r\n", GetLastError() ) ;
 		}
+		::glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		DRAW_SCENE( );
 		if ( FALSE == ::SwapBuffers( m_pDC->GetSafeHdc() ) )
 		{

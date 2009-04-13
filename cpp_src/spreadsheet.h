@@ -16,15 +16,17 @@ public:
 	const spread_sheet_cell& operator[](size_t idx)const{
 		return cells[idx];
 	}
-
-
 };
+
 class spread_sheet{
+	
+
 public:
 	spread_sheet_dimension client_area;	
+	opengl_font_handler writer;
+
 protected:	
 	spread_sheet_cell_container sp_cells;
-	
 	GLfloat pos_x( int x ) {return ((GLfloat) x / (GLfloat) client_area.width) * (GLfloat) client_area.num_cols + (GLfloat) real::one( );}
 	GLfloat pos_y (int y ) {return (GLfloat)y / (GLfloat) client_area.height * (GLfloat) client_area.num_rows + real::one( );}
 
@@ -67,7 +69,7 @@ protected:
 	::glPopMatrix( );	*/
 	}
 public:
-	spread_sheet( ):client_area(5,5){}	
+	spread_sheet( ):client_area(25,25){}	
 	~spread_sheet( ){}
 	void draw(spread_sheet_cell cell) const {
 		draw(cell.get_coord( ).get_col( ), cell.get_coord( ).get_row( ));
@@ -87,14 +89,7 @@ public:
 	
 		//glPopMatrix( );   
 	}
-	void draw_2D_cell_structure( void ) const {
-		glLineWidth(1.0);
-		glColor3f(0.3f,0.3f,0.3f);
-		draw_2D_vert_lines(  ); 
-		draw_2D_hor_lines(  );
-		active_cell.draw_2D_Outline( client_area );
-	}
-	
+	void draw_2D_cell_structure(  ) const;
 	void set_active_cell_wraps_coords( long x, long y)
 	{
 		active_cell.set_coordinates((int)pos_x( x ), (int)pos_y( y ));
