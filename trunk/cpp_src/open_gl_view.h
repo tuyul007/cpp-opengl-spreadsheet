@@ -10,15 +10,66 @@
 
 using namespace std;
 
+class gl_point{
+public:
+	GLfloat x;
+	GLfloat y;
+	GLfloat z;
+	gl_point (GLfloat X=0.0f, GLfloat Y=0.0f, GLfloat Z=0.0f){
+		x = X;
+		y = Y;
+		z = Z;
+	}
+	bool operator == (const gl_point p) const {
+		return (x == p.x && y == p.y && z == p.z);
+	}
+	gl_point mid_point (const gl_point& pt) const{
+		return gl_point((x + pt.x)/2.0f, (y + pt.y)/2.0f, (z + pt.z)/2.0f);
+	}
+	void vertex( ) const {glVertex3f( x, y, z);}
+};
+class gl_triangle{
 
+public:	
+	gl_point a;
+	gl_point b;
+	gl_point c;
+	gl_triangle( gl_point A, gl_point B, gl_point C)
+	{	
+		a = A;
+		b = B;
+		c = C;
+	}
+	void draw_outlined( )const{
+		glBegin(GL_LINE_LOOP);
+		a.vertex( );
+		b.vertex( );
+		c.vertex( );
+		glEnd( );
+	}
+	bool operator==(const gl_triangle t) const {
+		return (a == t.a && b == t.b && c == t.c);
+	}
+};
 class opengl_static_scene{
 	class color_type {
-public:
-	void black( ) const {::glColor3f(0.0f,0.0f,0.0f);}
-	void red( ) const {::glColor3f(1.0f, 0.0f, 0.0f);}
-	void lime( ) const {::glColor3f(0.0f, 1.0f, 0.0f);}
-    void purple( ) const {::glColor3f(1.0f, 0.14f, 0.6667f);}  
-};
+	public:
+		void black( ) const {::glColor3f(0.0f,0.0f,0.0f);}
+		void red( ) const {::glColor3f(1.0f, 0.0f, 0.0f);}
+		void lime( ) const {::glColor3f(0.0f, 1.0f, 0.0f);}
+		void purple( ) const {::glColor3f(1.0f, 0.14f, 0.6667f);}  
+		void white( ) const {::glColor3f(1.0f, 1.0f, 1.0f);}
+	};
+	class shape_type {
+	public:
+		void triangle( gl_point a, gl_point b, gl_point c) const{
+			glBegin(GL_LINE_LOOP);
+			a.vertex( );
+			b.vertex( );
+			c.vertex( );
+			glEnd( );
+		}
+	};
 	class projection_type{
 		bool switch_projection;
 	public:
@@ -32,25 +83,23 @@ public:
 	projection_type projection;
 
 protected:
-	int projection_type;
 	bool m_draw_cartesian_guide;
 	vector<GLfloat> O;
 	GLdouble frustum_bottom_top_angle;
-		
+	
+
 public:
 	color_type color;
-	opengl_static_scene( GLdouble frustum_bot_top_angle = 45.0f):
-		frustum_bottom_top_angle(frustum_bot_top_angle)
+	opengl_static_scene( GLdouble frustum_bot_top_angle = 45.0f )
 		{
+			frustum_bottom_top_angle = frustum_bot_top_angle;
 			O.resize(3);
 		}
 
 	GLdouble get_frustum_bottom_top_angle( void ) const {return frustum_bottom_top_angle;}
 	void set_frustum_bottom_top_angle( GLdouble newAngle ) {
 		frustum_bottom_top_angle = newAngle;
-	}
-	
-	
+	}	
 	void project_three_d( const CView& v)  {
 		projection._3D( );
 		RECT r;
@@ -108,7 +157,7 @@ public:
 		SelectObject(hDC, oldfont);							
 		DeleteObject(font);								
 	}
-	GLvoid glPrint(real::dimension dim, const char *fmt, ...)					
+	GLvoid glPrint(real::dimension dim, const char *fmt, ...) const				
 	{
 		glRasterPos2i((GLint)dim.left, (GLint)dim.bottom);
 											
@@ -130,14 +179,24 @@ public:
 class opengl_animation {
 	bool animation_running;
 	DWORD m_previousElapsedTime; 
-	int fps_rate;
-
+	size_t fps_rate;
 public:
+	void set_fps( int fps ){
+		if (fps > 0) fps_rate = fps;
+	}
+	size_t get_fps( void ) const {return fps_rate;}
+
+
 	opengl_animation( int fps=24, bool ar =  false):fps_rate(fps),animation_running(ar){}
 	bool is_running( ) const {return animation_running;}
 	void turn_on( ) 
 	{
 		animation_running = true;
+		m_previousElapsedTime = time( NULL );
+	}
+	void turn_off( ) 
+	{
+		animation_running = false;
 		m_previousElapsedTime = time( NULL );
 	}
 
@@ -152,8 +211,6 @@ public:
 			return false;
 		}
 };
-
-
 class opengl_msvc_view : public CView{
 protected:	
 	opengl_animation animation;
