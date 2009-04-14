@@ -33,27 +33,3 @@ class cell_prop_sheet : public CPropertySheet{
 public:
 	cell_prop_sheet( spread_sheet_cell& cell );
 };
-
-class cell_info_dlg : public CDialog
-{
-	DECLARE_DYNAMIC(cell_info_dlg)
-
-public:
-	cell_info_dlg(CWnd* pParent = NULL);   // standard constructor
-	virtual ~cell_info_dlg();
-
-	enum { IDD = IDD_DIALOG1 };
-
-protected:
-	CDialog * current_dialog;
-	
-	CTabCtrl m_tab;
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg void OnEnChangeEdit1();
-	afx_msg void OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
-};

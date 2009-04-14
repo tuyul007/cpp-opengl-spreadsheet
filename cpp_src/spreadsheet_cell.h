@@ -1,6 +1,3 @@
-//Franck Binard libraries
-//Available on Google Code
-#include <base_numbers.h>
 
 //Other libraries
 #include "gl/gl.h"
@@ -12,14 +9,21 @@
 
 using namespace std;
 
-class spread_sheet_dimension : public real::dimension{
+class data{
 public:
-	
-	integral::_base_number num_cols;
-	integral::_base_number num_rows;
+	typedef char* address;
+};
+class data_chunk{
+	data::address begin;
+	data::address end;
+public:
+	data_chunk( data::address b=NULL, data::address e=NULL ):begin(b),end(e){}
+};
+class spread_sheet_dimension : public real::dimension, public integral::grid{
+
 
 public:
-	spread_sheet_dimension(int ncols, int nrows):num_cols(ncols),num_rows(nrows){}
+	spread_sheet_dimension(int ncols, int nrows):grid(ncols, nrows){}
 	
 	GLfloat cell_2D_width( )const{
 		return (GLfloat)width / (GLfloat) num_cols;
@@ -27,8 +31,6 @@ public:
 	GLfloat cell_2D_height( )const{
 		return (GLfloat) height / (GLfloat) num_rows;
 	}
-	void add_row( ){num_rows++;}
-	void add_col( ){num_cols++;}
 
 	void remLastRow( ){ if (num_rows > 1) num_rows--;}
 	void remLastCol( ){if (num_cols > 1) num_cols--;}
@@ -82,11 +84,10 @@ class coord {
 };	
 
 
-
 class spread_sheet_cell  {
 protected:
 	coord cell_coord;
-	int datum;	
+	data_chunk datum;	
 	string string_view;
 
 public:
@@ -94,8 +95,8 @@ public:
 	coord get_coord( )const {return cell_coord;}
 	
 	string get_string( )const {return string_view;}
-	int get_datum( ) const {return datum;}
-	void set_datum( int d ) {datum = d;}
+	data_chunk get_datum( ) const {return datum;}
+	//void set_datum( int d ) {datum = d;}
 
 	void set_coordinates(int x, int y)
 	{
@@ -106,7 +107,7 @@ public:
 		GLfloat row_idx = (GLfloat)cell_coord.get_row( );
 		GLfloat col_idx = (GLfloat)coord::excel_column_numerical(cell_coord.get_col( ));
 		
-		GLfloat bottom = client_area.height - (row_idx * client_area.cell_2D_height( ));
+		GLfloat bottom = (GLfloat)client_area.height - (row_idx * client_area.cell_2D_height( ));
 		GLfloat left = (col_idx - 1.0f)* client_area.cell_2D_width( );
 
 		return real::dimension(client_area.cell_2D_width( ),client_area.cell_2D_height( ),left, bottom);

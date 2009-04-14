@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include <spreadsheet.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
